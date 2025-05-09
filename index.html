@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juli's Bedtime Routine Adventure</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Calming gradient */
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 1rem;
+            overflow-x: hidden; 
+        }
+        .app-container {
+            background-color: rgba(255, 255, 255, 0.1); /* Frosted glass effect */
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+        .step {
+            display: none; /* Hidden by default */
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .step.active {
+            display: block;
+        }
+        .step-icon {
+            font-size: 4rem; /* Larger icons */
+            margin-bottom: 1rem;
+            line-height: 1;
+        }
+        .step-title {
+            font-family: 'Comic Neue', cursive; /* Playful font for titles */
+            font-size: 2.25rem; /* Larger title */
+            margin-bottom: 0.75rem;
+            color: #f3f4f6;
+        }
+        .step-text {
+            font-size: 1.125rem; /* Slightly larger text */
+            margin-bottom: 1.5rem;
+            color: #e5e7eb;
+            line-height: 1.6;
+        }
+        .btn {
+            background-color: #8b5cf6; /* Vibrant purple */
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            font-size: 1rem;
+        }
+        .btn:hover {
+            background-color: #7c3aed; /* Darker purple on hover */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        .btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .progress-bar-container {
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 15px;
+            width: 0%; /* Initial width */
+            background-color: #a78bfa; /* Lighter purple for progress */
+            border-radius: 10px;
+            transition: width 0.5s ease-in-out;
+        }
+        .feedback-message {
+            background-color: rgba(76, 175, 80, 0.7); /* Semi-transparent green */
+            color: white;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            display: none; /* Hidden by default */
+            animation: fadeInOut 3s ease-in-out forwards; /* Keep last frame for fadeOut */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateY(10px); }
+            10% { opacity: 1; transform: translateY(0); }
+            90% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-10px); }
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 640px) {
+            .app-container {
+                padding: 1.5rem;
+            }
+            .step-icon {
+                font-size: 3rem;
+            }
+            .step-title {
+                font-size: 1.75rem;
+            }
+            .step-text {
+                font-size: 1rem;
+            }
+            .btn {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div id="step-0" class="step active">
+            <div class="step-icon">🌙</div>
+            <h1 class="step-title">Ready for Bed, Juli?</h1>
+            <p class="step-text">Let's go on a bedtime adventure together!</p>
+            <button class="btn" onclick="nextStep()">Let's Start!</button>
+        </div>
+
+        <div id="step-1" class="step">
+            <div class="step-icon">🛁</div>
+            <h2 class="step-title">Bath Time!</h2>
+            <p class="step-text">Make bath time playful with toys and songs!</p>
+            <button class="btn" onclick="nextStep('Splish, splash! All clean!')">All Clean!</button>
+            <div class="feedback-message" id="feedback-1"></div>
+        </div>
+
+        <div id="step-2" class="step">
+            <div class="step-icon">👕</div>
+            <h2 class="step-title">Cozy Pajamas!</h2>
+            <p class="step-text">Pick soft, comfy PJs for a good night's sleep.</p>
+            <button class="btn" onclick="nextStep('So cozy in your PJs!')">PJs On!</button>
+            <div class="feedback-message" id="feedback-2"></div>
+        </div>
+
+        <div id="step-3" class="step">
+            <div class="step-icon">🧴✨</div>
+            <h2 class="step-title">Lotion & Magnesium!</h2>
+            <p class="step-text">Gentle massage with lotion and magnesium can be relaxing.</p>
+            <button class="btn" onclick="nextStep('Feeling calm and relaxed!')">All Done!</button>
+            <div class="feedback-message" id="feedback-3"></div>
+        </div>
+
+        <div id="step-4" class="step">
+            <div class="step-icon">🐶🦴</div>
+            <h2 class="step-title">Doggy Goodnight Treats!</h2>
+            <p class="step-text">Let Juli say goodnight to her furry friends with a treat!</p>
+            <button class="btn" onclick="nextStep('Goodnight, furry friends!')">Treats Given!</button>
+            <div class="feedback-message" id="feedback-4"></div>
+        </div>
+
+        <div id="step-5" class="step">
+            <div class="step-icon">🍎</div>
+            <h2 class="step-title">Juli's Goodnight Treat!</h2>
+            <p class="step-text">A small, healthy snack can help Juli sleep well.</p>
+            <button class="btn" onclick="nextStep('Yummy! A perfect bedtime snack.')">Snack Eaten!</button>
+            <div class="feedback-message" id="feedback-5"></div>
+        </div>
+
+        <div id="step-6" class="step">
+            <div class="step-icon">📱💬</div>
+            <h2 class="step-title">Goodnight Calls!</h2>
+            <p class="step-text">Calling Daddy, Nana, or Papa for a goodnight chat can be comforting.</p>
+            <button class="btn" onclick="nextStep('Sweet goodnights shared!')">Calls Made!</button>
+            <div class="feedback-message" id="feedback-6"></div>
+        </div>
+
+        <div id="step-7" class="step">
+            <div class="step-icon">🍒🥤</div>
+            <h2 class="step-title">Cherry Juice!</h2>
+            <p class="step-text">Cherry juice can help with sleep.</p>
+            <button class="btn" onclick="nextStep('Refreshing and sleepy juice!')">All Sipped!</button>
+            <div class="feedback-message" id="feedback-7"></div>
+        </div>
+
+        <div id="step-8" class="step">
+            <div class="step-icon">📖</div>
+            <h2 class="step-title">Story Time!</h2>
+            <p class="step-text">Read a favorite book with Juli and cuddle up close.</p>
+            <button class="btn" onclick="nextStep('What a wonderful story!')">Story Finished!</button>
+            <div class="feedback-message" id="feedback-8"></div>
+        </div>
+
+        <div id="step-9" class="step">
+            <div class="step-icon">🎶😴</div>
+            <h2 class="step-title">Sound Machine On!</h2>
+            <p class="step-text">Soothing sounds can help Juli fall asleep peacefully.</p>
+            <button class="btn" onclick="nextStep('Peaceful sounds for sweet dreams.')">Sounds On!</button>
+            <div class="feedback-message" id="feedback-9"></div>
+        </div>
+
+        <div id="step-10" class="step">
+            <div class="step-icon">💡🌑</div>
+            <h2 class="step-title">Lights Out!</h2>
+            <p class="step-text">Time for sleep!</p>
+            <button class="btn" onclick="nextStep('Everything is dark and cozy.')">Lights Off!</button>
+            <div class="feedback-message" id="feedback-10"></div>
+        </div>
+        
+        <div id="step-11" class="step">
+            <div class="step-icon">😘💖</div>
+            <h2 class="step-title">Goodnight Kisses!</h2>
+            <p class="step-text">Sweet dreams, Juli!</p>
+            <button class="btn" onclick="nextStep('Mwah! So much love!')">Sweet Dreams!</button>
+            <div class="feedback-message" id="feedback-11"></div>
+        </div>
+
+        <div id="step-12" class="step">
+            <div class="step-icon">🌟✨</div>
+            <h1 class="step-title">Good Night, Juli!</h1>
+            <p class="step-text">Sleep tight and have the sweetest dreams. See you in the morning!</p>
+            <button class="btn" onclick="restartRoutine()">Start Over?</button>
+        </div>
+
+        <div class="progress-bar-container">
+            <div id="progressBar" class="progress-bar"></div>
+        </div>
+    </div>
+
+    <script>
+        // --- Configuration ---
+        const totalSteps = 12; // Total number of screens (0-12: Welcome, 11 routine steps, Final)
+        const numberOfRoutineTasks = 11; // Number of actual bedtime tasks
+        let currentStep = 0; // Start with the welcome screen (index 0)
+
+        // --- DOM Elements ---
+        const steps = [];
+        // Populate steps array with all step divs
+        for (let i = 0; i <= totalSteps; i++) {
+            steps.push(document.getElementById(`step-${i}`));
+        }
+        const progressBar = document.getElementById('progressBar');
+
+        // --- Functions ---
+
+        /**
+         * Displays a temporary feedback message for a step.
+         * @param {number} stepIndex - The index of the step to show feedback for (1-11 for routine steps).
+         * @param {string} message - The feedback message to display.
+         */
+        function showFeedback(stepIndex, message) {
+            const feedbackElement = document.getElementById(`feedback-${stepIndex}`);
+            if (feedbackElement) {
+                feedbackElement.textContent = message;
+                feedbackElement.style.display = 'block';
+                // Ensure animation restarts
+                feedbackElement.style.animation = 'none';
+                feedbackElement.offsetHeight; /* trigger reflow */
+                feedbackElement.style.animation = ''; 
+                
+                // Hide the message after the animation duration (3 seconds)
+                setTimeout(() => {
+                    if(feedbackElement.style.display === 'block'){ // only hide if it wasn't hidden by quick navigation
+                         feedbackElement.style.display = 'none';
+                    }
+                }, 3000);
+            }
+        }
+
+        /**
+         * Updates the display to show the current step and hide others.
+         * Also updates the progress bar.
+         */
+        function updateStepDisplay() {
+            steps.forEach((step, index) => {
+                if (step) { // Check if the step element exists
+                    if (index === currentStep) {
+                        step.classList.add('active');
+                    } else {
+                        step.classList.remove('active');
+                    }
+                }
+            });
+
+            // Update progress bar
+            let progressPercentage = 0;
+            if (currentStep === 0) { // Welcome screen
+                progressPercentage = 0;
+            } else if (currentStep > 0 && currentStep <= numberOfRoutineTasks) { 
+                // We are *displaying* routine task 1 (currentStep=1) up to task 11 (currentStep=11)
+                // (currentStep - 1) tasks have been completed.
+                progressPercentage = ((currentStep - 1) / numberOfRoutineTasks) * 100;
+            } else if (currentStep === numberOfRoutineTasks + 1) { // This is step-12, the final "Good Night!" screen
+                // All numberOfRoutineTasks are completed.
+                progressPercentage = 100;
+            }
+
+            if (progressBar) {
+                progressBar.style.width = `${progressPercentage}%`;
+            }
+        }
+
+        /**
+         * Moves to the next step in the routine.
+         * @param {string} [feedbackMsg] - Optional feedback message for the completed step.
+         */
+        function nextStep(feedbackMsg) {
+            // Show feedback for the current step if a message is provided and it's a routine step
+            if (feedbackMsg && currentStep > 0 && currentStep <= numberOfRoutineTasks) {
+                showFeedback(currentStep, feedbackMsg);
+            }
+
+            // Delay moving to the next step if feedback is shown, to allow user to read it.
+            // Otherwise, move immediately.
+            const delay = feedbackMsg ? 1000 : 0; 
+
+            setTimeout(() => {
+                if (currentStep < totalSteps) {
+                    currentStep++;
+                    updateStepDisplay();
+                }
+            }, delay);
+        }
+
+        /**
+         * Resets the routine to the first step (welcome screen).
+         */
+        function restartRoutine() {
+            currentStep = 0;
+            update_step_display(); // Corrected function name
+        }
+
+        // --- Initialization ---
+        // Ensure the first step (welcome screen) is visible on load.
+        window.onload = () => {
+            if (steps[0]) {
+                steps[0].classList.add('active');
+            }
+            updateStepDisplay(); // Initialize progress bar and step display
+        };
+    </script>
+</body>
+</html>
